@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/actionBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/actionBar_height"
+        android:background="@android:color/white"
+        android:layout_alignParentTop="true"
+        android:translationZ="2dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/app_name"
+            android:textColor="@color/green"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:paddingHorizontal="20dp"/>
+    </LinearLayout>
+
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/actionBar"
+        android:layout_alignParentEnd="true"/>
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/qr_code_square"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:translationZ="3dp"/>
+
+    <ImageView
+        android:layout_width="@dimen/gallery_button_size"
+        android:layout_height="@dimen/gallery_button_size"
+        android:foregroundGravity="center"
+        android:src="@drawable/ic_gallery"
+        android:background="@drawable/gallery_button_bg"
+        android:padding="20dp"
+        android:layout_margin="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"/>
+</RelativeLayout>
