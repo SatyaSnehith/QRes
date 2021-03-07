@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">QRes</string>
+    <string name="decode">Decode</string>
+    <string name="decrypt">Decrypt</string>
+    <string name="qr_code_data">QR Code Data</string>
+    <string name="copy">Copy</string>
 </resources>

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -39,29 +40,15 @@ public class ScannerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
 
+        if (!(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        }
+
         initViews();
     }
 
     private void initViews() {
         surfaceView = findViewById(R.id.surfaceView);
-
-
-//        btnAction.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (intentData.length() > 0) {
-//                    if (isEmail)
-//                        Toast.makeText(ScannerActivity.this, "url: " + intentData + "", Toast.LENGTH_LONG).show();
-////                        startActivity(new Intent(ScannerActivity.this, EmailActivity.class).putExtra("email_address", intentData));
-//                    else {
-//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(intentData)));
-//                    }
-//                }
-//
-//
-//            }
-//        });
     }
 
     private void initialiseDetectorsAndSources() {
@@ -107,35 +94,18 @@ public class ScannerActivity extends Activity {
         barcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
             @Override
             public void release() {
-                Toast.makeText(getApplicationContext(), "To prevent memory leaks barcode scanner has been stopped", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
                 if (barcodes.size() != 0) {
-
-
-//                    txtBarcodeValue.post(new Runnable() {
-//
-//                        @Override
-//                        public void run() {
-//
-//                            if (barcodes.valueAt(0).email != null) {
-//                                txtBarcodeValue.removeCallbacks(null);
-//                                intentData = barcodes.valueAt(0).email.address;
-//                                txtBarcodeValue.setText(intentData);
-//                                isEmail = true;
-//                                btnAction.setText("ADD CONTENT TO THE MAIL");
-//                            } else {
-//                                isEmail = false;
-//                                btnAction.setText("LAUNCH URL");
-//                                intentData = barcodes.valueAt(0).displayValue;
-//                                txtBarcodeValue.setText(intentData);
-//
-//                            }
-//                        }
-//                    });
+                    if (barcodes.valueAt(0) != null) {
+                        intentData = barcodes.valueAt(0).displayValue;
+                        Intent intent = new Intent(ScannerActivity.this, DecryptCodeActivity.class);
+                        intent.putExtra("data", intentData);
+                        startActivity(intent);
+                    }
 
                 }
             }
