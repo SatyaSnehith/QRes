@@ -93,7 +93,7 @@ public class DecryptCodeActivity extends Activity implements AdapterView.OnItemS
         String text = "";
         try {
             text = Base.decrypt(barcode.rawValue);
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             text = "";
         }
         decryptTextView.setText(text);

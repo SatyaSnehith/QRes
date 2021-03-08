@@ -38,22 +38,21 @@ public class ScannerActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        found = false;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scanner);
 
         if (!(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        } else {
+            initViews();
         }
-
-        initViews();
     }
 
     private void initViews() {
+        setContentView(R.layout.activity_scanner);
         surfaceView = findViewById(R.id.surfaceView);
     }
 
@@ -109,12 +108,11 @@ public class ScannerActivity extends Activity {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
                 if (barcodes.size() != 0) {
                     if (barcodes.valueAt(0) != null && !found) {
-
+                        found = true;
                         intentData = barcodes.valueAt(0).displayValue;
                         Intent intent = new Intent(ScannerActivity.this, DecryptCodeActivity.class);
                         intent.putExtra("data", barcodes.valueAt(0));
                         startActivity(intent);
-                        found = true;
                     }
 
                 }
@@ -133,5 +131,6 @@ public class ScannerActivity extends Activity {
     protected void onResume() {
         super.onResume();
         initialiseDetectorsAndSources();
+        found = false;
     }
 }
