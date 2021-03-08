@@ -16,6 +16,7 @@ public class SplashScreenActivity extends Activity {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
+                finish();
                 startActivity(intent);
             }
         }, 1000);

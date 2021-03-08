@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
@@ -32,8 +33,13 @@ public class ScannerActivity extends Activity {
     private static final int REQUEST_CAMERA_PERMISSION = 201;
     Button btnAction;
     String intentData = "";
-    boolean isEmail = false;
+    boolean found;
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        found = false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +64,9 @@ public class ScannerActivity extends Activity {
                 .build();
 
         cameraSource = new CameraSource.Builder(this, barcodeDetector)
-                .setRequestedPreviewSize(1920, 1080)
+                .setRequestedPreviewSize(1280, 720)
+                .setFacing(CameraSource.CAMERA_FACING_BACK)
+                .setRequestedFps(30.0f)
                 .setAutoFocusEnabled(true) //you should add this feature
                 .build();
 
@@ -100,11 +108,13 @@ public class ScannerActivity extends Activity {
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();
                 if (barcodes.size() != 0) {
-                    if (barcodes.valueAt(0) != null) {
+                    if (barcodes.valueAt(0) != null && !found) {
+
                         intentData = barcodes.valueAt(0).displayValue;
                         Intent intent = new Intent(ScannerActivity.this, DecryptCodeActivity.class);
-                        intent.putExtra("data", intentData);
+                        intent.putExtra("data", barcodes.valueAt(0));
                         startActivity(intent);
+                        found = true;
                     }
 
                 }
