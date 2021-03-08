@@ -10,10 +10,12 @@ import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.transition.TransitionValues;
 import android.transition.Visibility;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,18 +25,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.vision.barcode.Barcode;
+import com.p04.qres.crypt.Base;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-public class DecryptCodeActivity extends Activity {
+public class DecryptCodeActivity extends Activity implements AdapterView.OnItemSelectedListener {
     private Barcode barcode;
     private boolean decodeCardOpened, decryptCardOpened;
+    private ImageView backButton;
     private ImageView decodeArrowImageView;
     private LinearLayout decodeCardLayout, decodeTitleLayout, decodeDataLayout,decodeCopyButton;
     private TextView dTextView;
 
     private ImageView decryptArrowImageView;
     private LinearLayout decryptCardLayout, decryptTitleLayout, decryptDataLayout, decryptCopyButton;
+    private TextView decryptTextView;
     private Spinner spinner;
     private ArrayList<String> schemeList;
     private ArrayAdapter<String> schemeAdapter;
@@ -44,6 +50,7 @@ public class DecryptCodeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_decrypter);
         init();
+        backButton.setOnClickListener(this::onBackPressed);
 
         decodeTitleLayout.setOnClickListener(this::onClickDecodeTitle);
         dTextView.setText(barcode.displayValue);
@@ -52,19 +59,21 @@ public class DecryptCodeActivity extends Activity {
         decryptTitleLayout.setOnClickListener(this::onClickDecryptTitle);
         decryptCopyButton.setOnClickListener(this::copyDecryptData);
         schemeList.add("base64");
-        schemeList.add("base64");
-        schemeList.add("base64");
         schemeAdapter.setDropDownViewResource(R.layout.scheme_spinner_item);
         spinner.setAdapter(schemeAdapter);
+        spinner.setOnItemSelectedListener(this);
+
+        decrypt();
     }
 
     private void init() {
         decodeCardOpened = true;
         decryptCardOpened = true;
         barcode = getIntent().getParcelableExtra("data");
-        dTextView = findViewById(R.id.decode_data_tv);
+        backButton = findViewById(R.id.back_button);
         decodeCardLayout = findViewById(R.id.decode_card_ll);
         decodeTitleLayout = findViewById(R.id.decode_card_title);
+        dTextView = findViewById(R.id.decode_data_tv);
         decodeDataLayout = findViewById(R.id.decode_data_ll);
         decodeArrowImageView = findViewById(R.id.decode_arrow_iv);
         decodeCopyButton = findViewById(R.id.decode_copy_button);
@@ -73,10 +82,35 @@ public class DecryptCodeActivity extends Activity {
         decryptTitleLayout = findViewById(R.id.decrypt_card_title);
         decryptDataLayout = findViewById(R.id.decrypt_data_ll);
         decryptArrowImageView = findViewById(R.id.decrypt_arrow_iv);
+        decryptTextView = findViewById(R.id.decrypt_data_tv);
         decryptCopyButton = findViewById(R.id.decrypt_copy_button);
         spinner = findViewById(R.id.decrypt_scheme_spinner);
         schemeList = new ArrayList<>();
         schemeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, schemeList);
+    }
+
+    private void decrypt() {
+        String text = "";
+        try {
+            text = Base.decrypt(barcode.rawValue);
+        } catch (UnsupportedEncodingException e) {
+            text = "";
+        }
+        decryptTextView.setText(text);
+    }
+
+    private void onBackPressed(View view) {
+        finish();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Log.i("TAG_SPINNER", "onItemSelected: " + schemeList.get(position));
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
     private void copyDecodeData(View view) {
@@ -189,5 +223,6 @@ public class DecryptCodeActivity extends Activity {
         rotate.setInterpolator(new LinearInterpolator());
         decryptArrowImageView.startAnimation(rotate);
     }
+
 
 }
