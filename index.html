@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
+        <title>Encrypted QR code generator</title>
+        <style>
+            body {
+                text-align: center;
+                color: #fafafa;
+                background-color: #212121;
+            }
+            #inputForm {
+                margin: auto;
+                width: 300px;
+            }
+            #TextDiv {
+            }
+            #buttonDiv {
+                text-align: right;
+                margin: 10px
+            }
+            .inputLabel {
+                color: #fafafa;
+            }
+            .inputData {
+                border: none;
+                background-color: #616161;
+                color: #f5f5f5;
+                padding: 10px;
+            }
+            .inputData:focus, .inputData:active {
+                outline: none;
+            }
+            .genButton {
+                border: none;
+                background-color: #424242;
+                color: #f5f5f5;
+                padding: 10px;
+            }
+            .genButton:focus, .genButton:active, .genButton:hover {
+                background-color: #757575;
+                outline: none;
+            }
+            #code {
+                margin: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Base64 QR code generator</h1>
+        <div id="inputForm">
+            <div id="TextDiv">
+                <label class="inputLabel">Text:</label>
+                <input type="text" id="inputText" class="inputData">
+            </div>
+            <div id="buttonDiv">
+                <input type="button" id ="generateButton" class="genButton" value="generate" onclick="generate()"/>
+            </div>
+        </div>
+        <img id="code"/>
+    </body>
+    <script type="text/javascript">
+        const url = "https://zxing.org/w/chart?cht=qr&chs=350x350&chld=H%7C6&choe=UTF-8&chl=";
+        var input = document.getElementById("inputText");
+        var image = document.getElementById("code");
+        function generate() {
+            var value = input.value;
+            if (value.length > 0) {
+                image.style.display = "block";
+                image.src = url + window.btoa(input.value);
+            } else {
+                image.style.display = "none";
+            }
+        }
+    </script>
+</html>
