@@ -1,5 +1,6 @@
 package com.p04.qres;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
@@ -26,29 +27,29 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import java.io.IOException;
 
 public class ScannerActivity extends Activity {
+    private static final int REQUEST_CAMERA_PERMISSION = 201;
 
     SurfaceView surfaceView;
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
-    private static final int REQUEST_CAMERA_PERMISSION = 201;
     Button btnAction;
     String intentData = "";
     boolean found;
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 201) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                initViews();
+                initialiseDetectorsAndSources();
+            }
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (!(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-        } else {
-            initViews();
-        }
+        initViews();
     }
 
     private void initViews() {
@@ -62,8 +63,14 @@ public class ScannerActivity extends Activity {
                 .setBarcodeFormats(Barcode.ALL_FORMATS)
                 .build();
 
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        int height = displayMetrics.heightPixels;
+        Log.d("TAG_SCREEN","Metrics Preview width and height="+width+" "+height);
+
         cameraSource = new CameraSource.Builder(this, barcodeDetector)
-                .setRequestedPreviewSize(1280, 720)
+                .setRequestedPreviewSize(height, width)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setRequestedFps(30.0f)
                 .setAutoFocusEnabled(true) //you should add this feature
