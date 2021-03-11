@@ -1,0 +1,164 @@
+body {
+    color: #212121;
+    background-color: #EEEEEE;
+    /* background-image: linear-gradient(#e1bee7, #ff9e80); */
+    /* background-attachment: fixed; */
+}
+#inputForm {
+    margin: auto;
+    width: 700px;
+
+}
+.card {
+    background-color: #FFFFFF;
+    padding: 10px 20px 10px 20px;
+    border-radius: 10px;
+    margin: 10px 0px 10px 0px;
+}
+#heading {
+    font-size: 2em;
+
+}
+ol {
+    list-style-type: none;
+    padding: 0px;
+}
+.inputLabel {
+    color: #212121;
+    margin: 5px;
+}
+.dropDown {
+    display: block;
+    position: relative;
+    width: inherit;
+}
+.selected {
+    position: relative;
+    display: block;
+    width: inherit;
+    border: 1px solid #CDCDCD;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: bold;
+}
+.options {
+    display: none;
+    text-align: left;
+    position: absolute;
+    background-color: #f1f1f1;
+    width: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border: 1px solid transparent;
+    border-color: transparent #CDCDCD #CDCDCD #CDCDCD;
+    border-radius: 0px 0px 5px 5px;
+    z-index: 1;
+}
+.option {
+    display: block;
+    color: #212121;
+    padding: 10px;
+    background-color: #FFFFFF;
+    border: 1px solid transparent;
+    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+    cursor: pointer;
+}
+.arrowDiv {
+    position: absolute;
+    display: inline-block;
+    width: auto;
+    right: 0;
+    top: 0;
+}
+.arrowSpan {
+    display: block;
+    padding: 10px;
+}
+.arrowSpan::after {
+    content: "";
+    border: solid black;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 2px;
+    margin: 3px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+.inputMarginBottom {
+    margin-bottom: 10px;
+}
+.inputData {
+    display: block;
+    position: relative;
+    height: auto;
+    background-color: #e0e0e0;
+    color: #000000;
+    font-weight: 600;
+    border-radius: 5px;
+    width: 660px;
+    padding: 10px;
+    font-size: 1.3em;
+    border: none;
+    box-sizing: border-box;
+    resize: vertical;
+}
+.inputData:focus, .inputData:active {
+    outline: none;
+}
+.inputData::-webkit-scrollbar {
+    cursor: pointer;
+    width: 5px;
+}
+
+.inputData::-webkit-scrollbar-track {
+    background-color: #CDCDCD;
+}
+
+.inputData::-webkit-scrollbar-thumb {
+  background-color: #626262;
+  outline: 1px solid slategrey;
+}
+.hide {
+    display: none;
+}
+.errorText {
+    font-weight: bold;
+    color: #b71c1c;
+}
+.genButton {
+    border: none;
+    display: block;
+    width: 100%;
+    border-radius: 10px;;
+    background-color: #66bb6a;
+    color: #212121;
+    padding: 10px;
+}
+.genButton:focus, .genButton:active, .genButton:hover {
+    background-color: #9ccc65;
+    outline: none;
+}
+.text {
+    position: relative;
+    display: block;
+    width: inherit;
+    border: 1px solid #CDCDCD;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: bold;
+    font-weight: bold;
+}
+#code {
+    margin: 20px;
+}
+#code > img{
+    margin: auto;
+}
+@media (max-width: 800px) {
+    #inputForm {
+        margin: auto;
+        width: 300px;
+    }
+    .inputData {
+        width: 260px;
+    }
+}

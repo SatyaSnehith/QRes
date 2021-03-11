@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
+        <title>Encrypted QR code generator</title>
+        <script src="qrcode.min.js"></script>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div id="inputForm">
+            <ol>
+                <li>
+                    <p id="heading">Encrypted QR code generator</p>
+                </li>
+                <li class="card">
+                    <label class="inputLabel">Encryption type</label>
+                    <div id="encTypeSelect" class="dropDown inputMarginBottom">
+                        <div id="selectedEncType" class="selected">
+                            <label id="selectedEncTypeText">Base64</label>
+                            <div id="encArrow" class="arrowDiv">
+                                <span class="arrowSpan"></span>
+                            </div>
+                        </div>
+                        <div id="encTypeOptions" class="options">
+                            <label class="encTypeOption option" onclick="selectEncType(this)"></label>
+                            <label class="encTypeOption option" onclick="selectEncType(this)"></label>
+                            <label class="encTypeOption option" onclick="selectEncType(this)"></label>
+                        </div>
+                    </div>
+                    <div id="typeCeasar" class="hide">
+                        <label class="inputLabel">Key (Number)</label>
+                        <input type="text" id="inputCeasar" class="inputData inputMarginBottom"/>
+                    </div>
+                    <div id="typeVigenere" class="hide">
+                        <label class="inputLabel">Key (Word)</label>
+                        <input type="text" id="inputVigenere" class="inputData"/>
+                    </div>
+
+                </li>
+
+                <li>
+                    <div class="card">
+                        <label class="inputLabel">Barcode type</label>
+                        <div id="codeTypeSelect" class="dropDown">
+                            <div id="codeTypeSelected" class="selected">
+                                <label id="codeTypeSelectedText">Text</label>
+                                <div id="codeArrow" class="arrowDiv">
+                                    <span class="arrowSpan"></span>
+                                </div>
+                            </div>
+                            <div id="codeTypeOptions" class="options">
+                                <label class="codeTypeOption option" onclick="selectCodeType(this)"></label>
+                                <label class="codeTypeOption option" onclick="selectCodeType(this)"></label>
+                                <label class="codeTypeOption option" onclick="selectCodeType(this)"></label>
+                                <label class="codeTypeOption option" onclick="selectCodeType(this)"></label>
+                                <label class="codeTypeOption option" onclick="selectCodeType(this)"></label>
+                                <label class="codeTypeOption option" onclick="selectCodeType(this)"></label>
+                                <label class="codeTypeOption option" onclick="selectCodeType(this)"></label>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="card">
+                        <div id="typeText" class="hide">
+                            <label class="inputLabel">Text</label>
+                            <textarea type="text" id="inputText" class="inputData"></textarea>
+                        </div>
+                        <div id="typeUrl" class="hide">
+                            <label class="inputLabel">URL</label>
+                            <input type="text" id="inputUrl" value="http://" class="inputData"/>
+                        </div>
+                        <div id="typeEmail" class="hide">
+                            <label class="inputLabel">Email address</label>
+                            <input type="text" id="inputEmail" class="inputData"/>
+                        </div>
+                        <div id="typePhone" class="hide">
+                            <label class="inputLabel">Phone number</label>
+                            <input type="text" id="inputPhone" class="inputData"/>
+                        </div>
+                        <div id="typeSms" class="hide">
+                            <label class="inputLabel">Phone number</label>
+                            <input type="text" id="inputPhoneSms" class="inputData inputMarginBottom"/>
+                            <label class="inputLabel">Message</label>
+                            <textarea type="text" id="inputSms" class="inputData"></textarea>
+                        </div>
+                        <div id="typeWifi" class="hide">
+                            <label class="inputLabel">SSID</label>
+                            <input type="text" id="inputSsid" class="inputData inputMarginBottom"/>
+                            <label class="inputLabel">Password</label>
+                            <input type="text" id="inputPassword" class="inputData inputMarginBottom"/>
+                            <label class="inputLabel">Password</label>
+                            <div id="wifiTypeSelect" class="dropDown">
+                                <div id="wifiTypeSelected" class="selected">
+                                    <label id="wifiTypeSelectedText">WEP</label>
+                                    <div id="wifiArrow" class="arrowDiv">
+                                        <span class="arrowSpan"></span>
+                                    </div>
+                                </div>
+                                <div id="wifiTypeOptions" class="options">
+                                    <label class="wifiTypeOption option" onclick="selectCodeWifiType(this)">WEP</label>
+                                    <label class="wifiTypeOption option" onclick="selectCodeWifiType(this)">WPA/WPA2</label>
+                                    <label class="wifiTypeOption option" onclick="selectCodeWifiType(this)">No password</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="typeContactInformation" class="hide">
+                            <label class="inputLabel">Name</label>
+                            <input type="text" id="inputName" class="inputData inputMarginBottom"/>
+                            <label class="inputLabel">Company</label>
+                            <input type="text" id="inputCompany" class="inputData inputMarginBottom"/>
+                            <label class="inputLabel">Phone number</label>
+                            <input type="text" id="inputPhoneConInfo" class="inputData inputMarginBottom"/>
+                            <label class="inputLabel">Email</label>
+                            <input type="text" id="inputEmailConInfo" class="inputData inputMarginBottom"/>
+                            <label class="inputLabel">Address</label>
+                            <input type="text" id="inputAddress" class="inputData inputMarginBottom"/>
+                            <label class="inputLabel">Website</label>
+                            <input type="text" id="inputUrlConInfo" class="inputData inputMarginBottom"/>
+                            <label class="inputLabel">Note</label>
+                            <input type="text" id="inputNote" class="inputData"/>
+
+                        </div>
+                    </div>
+                </li>
+                <li id="invalidateItem" class="card hide">
+                    <p id="invalidateText" class="errorText"></p>
+                </li>
+                <li>
+                    <input type="button" id ="generateButton" class="genButton" value="Generate" onclick="generate()"/>
+                </li>
+                <li id="QRItem" class="card hide">
+                    <label class="inputLabel">encoded content</label>
+                    <a id="encodeContent" class="text inputMarginBottom">dsf</a>
+                    <label class="inputLabel">Encrypted content</label>
+                    <a id="encryptedContent" class="text inputMarginBottom">dsf</a>
+                    <div id="code"/>
+                </li>
+            </ol>
+        </div>
+
+    </body>
+    <script src="gen.js"></script>
+</html>
