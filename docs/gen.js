@@ -225,7 +225,7 @@ function init() {
             }
             var email = escapeText(inputEmailConInfo.value);
             if (email.length > 0) {
-                encoded += "TEL:" + email + ';';
+                encoded += "EMAIL:" + email + ';';
             }
             var address = escapeText(inputAddress.value);
             if (address.length > 0) {
