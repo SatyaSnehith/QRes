@@ -148,6 +148,19 @@ ol {
     font-weight: bold;
     overflow: auto;
 }
+.text::-webkit-scrollbar {
+    cursor: pointer;
+    height: 5px;
+}
+
+.text::-webkit-scrollbar-track {
+    background-color: #CDCDCD;
+}
+
+.text::-webkit-scrollbar-thumb {
+  background-color: #626262;
+  outline: 1px solid slategrey;
+}
 #code {
     margin: 20px;
 }
