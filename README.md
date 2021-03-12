@@ -6,4 +6,5 @@ This project is based on a article published by Heider A. M. Wahsheh and Flamini
 
 # references
 https://github.com/zxing/zxing/wiki
+https://davidshimjs.github.io/qrcodejs/
 https://www.journaldev.com/18198/qr-code-barcode-scanner-android
