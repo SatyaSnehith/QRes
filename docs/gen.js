@@ -5,7 +5,7 @@ var wifiTypeSelected = document.getElementById("wifiTypeSelectedText");
 var encOptions = document.getElementById("encTypeOptions");
 var codeOptions = document.getElementById("codeTypeOptions");
 var wifiOptions = document.getElementById("wifiTypeOptions");
-var encTypes = ['Base64', 'Ceasar cipher', 'Vigenere cipher'];
+var encTypes = ['Base64', 'Ceasar cipher', 'Vigenere cipher', 'None'];
 var codeTypes = ['Text', 'URL', 'Email address', 'Phone number', 'SMS', 'Wifi network', 'Contact information'];
 var wifiTypes = ['WEP', 'WPA/WPA2', 'none'];
 let typeText = document.getElementById("typeText");
@@ -38,17 +38,86 @@ var inputVigenere = document.getElementById('inputVigenere');
 
 var invalidateText = document.getElementById("invalidateText");
 var invalidateItem = document.getElementById("invalidateItem");
-var QRItem = document.getElementById("QRItem");
 
 var encodedContent = document.getElementById("encodeContent");
 var encryptedContent = document.getElementById("encryptedContent");
+
+var qrWidth = 300;
 
 let codeTypeMap = new Map();
 var encodeTypeMap = new Map();
 let encTypeMap = new Map();
 var encryptMap = new Map();
 
-var qrcode = new QRCode(document.getElementById("code"), {width: 200, height: 200});
+var invalidate = "";
+
+function saveInput() {
+    localStorage['selectedEncTypeText'] = selectedEncType.innerHTML;
+    localStorage['codeTypeSelectedText'] = codeTypeSelected.innerHTML;
+    localStorage['wifiTypeSelectedText'] = wifiTypeSelected.innerHTML;
+    localStorage['inputText'] = inputText.value;
+    localStorage['inputUrl'] = inputUrl.value;
+    localStorage['inputEmail'] = inputEmail.value;
+    localStorage['inputPhone'] = inputPhone.value;
+    localStorage['inputPhoneSms'] = inputPhoneSms.value;
+    localStorage['inputSms'] = inputSms.value;
+    localStorage['inputSsid'] = inputSsid.value;
+    localStorage['inputPassword'] = inputPassword.value;
+    localStorage['inputName'] = inputName.value;
+    localStorage['inputCompany'] = inputCompany.value;
+    localStorage['inputPhoneConInfo'] = inputPhoneConInfo.value;
+    localStorage['inputEmailConInfo'] = inputEmailConInfo.value;
+    localStorage['inputAddress'] = inputAddress.value;
+    localStorage['inputUrlConInfo'] = inputUrlConInfo.value;
+    localStorage['inputNote'] = inputNote.value;
+    localStorage['inputCeasar'] = inputCeasar.value;
+    localStorage['inputVigenere'] = inputVigenere.value;
+}
+
+function getInput() {
+    if (typeof localStorage['selectedEncTypeText'] !== "undefined")
+        selectedEncType.innerHTML = localStorage['selectedEncTypeText'];
+    if (typeof localStorage['codeTypeSelectedText'] !== "undefined")
+        codeTypeSelected.innerHTML = localStorage['codeTypeSelectedText'];
+    if (typeof localStorage['wifiTypeSelectedText'] !== "undefined")
+        wifiTypeSelected.innerHTML = localStorage['wifiTypeSelectedText'];
+    if (typeof localStorage['inputText'] !== "undefined")
+        inputText.value = localStorage['inputText'];
+    if (typeof localStorage['inputUrl'] !== "undefined")
+        inputUrl.value = localStorage['inputUrl'];
+    if (typeof localStorage['inputEmail'] !== "undefined")
+        inputEmail.value = localStorage['inputEmail'];
+    if (typeof localStorage['inputPhone'] !== "undefined")
+        inputPhone.value = localStorage['inputPhone'];
+    if (typeof localStorage['inputPhoneSms'] !== "undefined")
+        inputPhoneSms.value = localStorage['inputPhoneSms'];
+    if (typeof localStorage['inputSms'] !== "undefined")
+        inputSms.value = localStorage['inputSms'];
+    if (typeof localStorage['inputSsid'] !== "undefined")
+        inputSsid.value = localStorage['inputSsid'];
+    if (typeof localStorage['inputPassword'] !== "undefined")
+        inputPassword.value = localStorage['inputPassword'];
+    if (typeof localStorage['inputName'] !== "undefined")
+        inputName.value = localStorage['inputName'];
+    if (typeof localStorage['inputCompany'] !== "undefined")
+        inputCompany.value = localStorage['inputCompany'];
+    if (typeof localStorage['inputPhoneConInfo'] !== "undefined")
+        inputPhoneConInfo.value = localStorage['inputPhoneConInfo'];
+    if (typeof localStorage['inputEmailConInfo'] !== "undefined")
+        inputEmailConInfo.value = localStorage['inputEmailConInfo'];
+    if (typeof localStorage['inputAddress'] !== "undefined")
+        inputAddress.value = localStorage['inputAddress'];
+    if (typeof localStorage['inputUrlConInfo'] !== "undefined")
+        inputUrlConInfo.value = localStorage['inputUrlConInfo'];
+    if (typeof localStorage['inputNote'] !== "undefined")
+        inputNote.value = localStorage['inputNote'];
+    if (typeof localStorage['inputCeasar'] !== "undefined")
+        inputCeasar.value = localStorage['inputCeasar'];
+    if (typeof localStorage['inputVigenere'] !== "undefined")
+        inputVigenere.value = localStorage['inputVigenere'];
+}
+
+getInput();
 
 function hideAllEncTypes() {
     typeCeasar.style.display = 'none';
@@ -82,7 +151,7 @@ function showInvalidateItem() {
 }
 
 function escapeText(selector) {
-    return selector.replace(/(\,|\.|\/|\:|\;)/g, function($1, $2) {
+    return selector.replace(/(\,|\/|\:|\;)/g, function($1, $2) {
         return "\\" + $2;
     });
 }
@@ -149,7 +218,7 @@ function init() {
         var value = inputUrl.value;
         if (value.length > 0)
             return value;
-        else return null;    
+        else return null;
     };
 
     encodeTypeMap[codeTypes[2]] = function() {
@@ -157,14 +226,14 @@ function init() {
         console.log(value);
         if (value.length > 0)
             return "mailto:" + value;
-        else return null;  
+        else return null;
     };
 
     encodeTypeMap[codeTypes[3]] = function() {
         var value = inputPhone.value;
         if (value.length > 0)
             return "tel:" + value;
-        else return null;  
+        else return null;
     };
 
     encodeTypeMap[codeTypes[4]] = function() {
@@ -177,7 +246,7 @@ function init() {
             }
             return encoded;
         }
-        else return null;  
+        else return null;
     };
 
     encodeTypeMap[codeTypes[5]] = function() {
@@ -255,6 +324,10 @@ function init() {
         typeVigenere.style.display = 'block';
     };
 
+    encTypeMap[encTypes[3]] = function() {
+        hideAllEncTypes();
+    };
+
     encryptMap[encTypes[0]] = function(text) {
         if (text == null) return null;
         return encryptBase64(text);
@@ -267,6 +340,7 @@ function init() {
         if (!isNaN(key)) {
             return encryptCeasar(text, key);
         } else {
+            invalidate = "Enter a number as Ceasar cipher key"
             return null;
         }
     }
@@ -274,7 +348,16 @@ function init() {
     encryptMap[encTypes[2]] = function(text) {
         if (text == null) return null;
         var key = inputVigenere.value;
+        if (key.length == 0) {
+            invalidate = "Enter a word as Vigenere key"
+            return null;
+        }
         return encryptVigenere(text, key);
+    }
+
+    encryptMap[encTypes[3]] = function(text) {
+        if (text == null) return null;
+        return text;
     }
 }
 
@@ -332,6 +415,10 @@ function encryptVigenere(text, key) {
     return encryptedText;
 }
 
+function genUrl(text) {
+    return 'https://zxing.org/w/chart?cht=qr&chs=' + qrWidth + 'x' + qrWidth + '&chld=H%7C6&choe=UTF-8&chl=' + text + '';
+}
+
 function generate() {
     hideQRItem();
     hideInvalidateItem();
@@ -340,10 +427,9 @@ function generate() {
     console.log(encryptedValue);
     if (encryptedValue == null) {
         showInvalidateItem();
+        invalidateText.innerHTML = invalidate;
         if (encodedValue == null)
             invalidateText.innerHTML = "Enter atleast 1 character in first field";
-        else 
-            invalidateText.innerHTML = "Enter any value as key";    
         return;
     }
     showQRItem();
@@ -351,8 +437,9 @@ function generate() {
     encryptedContent.innerHTML = encryptedValue;
     if (encryptedValue.length > 0) {
         var value = encodeURI(encryptedValue);
-        qrcode.makeCode(value);
+        image.src = genUrl(value);
     }
+    saveInput();
 }
 function selectEncType(element) {
     selectedEncType.innerHTML = element.innerHTML;
@@ -406,4 +493,34 @@ window.onclick = function(event) {
         closeCodeDrop();
         closeWifiDrop();
     }
+};
+var inputForm = document.getElementById('inputForm');
+var inputDataList = document.getElementsByClassName('inputData');
+var cards = document.getElementsByClassName('card');
+
+function setWidthToArray(elements, width) {
+    let len = elements.length;
+    for (var i = 0; i < len; ++i)
+        elements[i].style.width = width + "px";
+}
+
+window.onresize = function(event) {
+    let width = document.body.clientWidth;
+
+    if (width >= 150 && width < 800) {
+        inputForm.style.width = width + "px";
+        setWidthToArray(inputDataList, width - 40);
+    } else if (width > 800) {
+        inputForm.style.width = 800 + "px";
+        setWidthToArray(inputDataList, 760);
+    }
+};
+let width = document.body.clientWidth;
+
+if (width >= 150 && width < 800) {
+    inputForm.style.width = width + "px";
+    setWidthToArray(inputDataList, width - 40);
+} else if (width > 800) {
+    inputForm.style.width = 800 + "px";
+    setWidthToArray(inputDataList, 760);
 }
