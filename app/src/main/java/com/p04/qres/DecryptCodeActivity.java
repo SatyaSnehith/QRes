@@ -1,6 +1,5 @@
 package com.p04.qres;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -17,21 +16,18 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.vision.barcode.Barcode;
-import com.p04.qres.crypt.Base;
+import com.p04.qres.utils.DecryptUtil;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 public class DecryptCodeActivity extends Activity implements AdapterView.OnItemSelectedListener {
-    private Barcode barcode;
+    private String text;
     private boolean decodeCardOpened, decryptCardOpened;
     private ImageView backButton;
     private ImageView decodeArrowImageView;
@@ -53,7 +49,7 @@ public class DecryptCodeActivity extends Activity implements AdapterView.OnItemS
         backButton.setOnClickListener(this::onBackPressed);
 
         decodeTitleLayout.setOnClickListener(this::onClickDecodeTitle);
-        dTextView.setText(barcode.displayValue);
+        dTextView.setText(text);
         decodeCopyButton.setOnClickListener(this::copyDecodeData);
 
         decryptTitleLayout.setOnClickListener(this::onClickDecryptTitle);
@@ -69,7 +65,7 @@ public class DecryptCodeActivity extends Activity implements AdapterView.OnItemS
     private void init() {
         decodeCardOpened = true;
         decryptCardOpened = true;
-        barcode = getIntent().getParcelableExtra("data");
+        text = getIntent().getParcelableExtra("data");
         backButton = findViewById(R.id.back_button);
         decodeCardLayout = findViewById(R.id.decode_card_ll);
         decodeTitleLayout = findViewById(R.id.decode_card_title);
@@ -92,7 +88,7 @@ public class DecryptCodeActivity extends Activity implements AdapterView.OnItemS
     private void decrypt() {
         String text = "";
         try {
-            text = Base.decrypt(barcode.rawValue);
+            text = DecryptUtil.base64(text);
         } catch (Exception e) {
             text = "";
         }
@@ -114,12 +110,11 @@ public class DecryptCodeActivity extends Activity implements AdapterView.OnItemS
     }
 
     private void copyDecodeData(View view) {
-        copyToClipBoard(barcode.displayValue);
+        copyToClipBoard(text);
         Toast.makeText(this, R.string.text_copy, Toast.LENGTH_SHORT).show();
     }
 
     private void copyDecryptData(View view) {
-
     }
 
     private void copyToClipBoard(String text) {

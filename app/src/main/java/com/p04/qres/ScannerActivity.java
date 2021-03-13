@@ -116,9 +116,9 @@ public class ScannerActivity extends Activity {
                 if (barcodes.size() != 0) {
                     if (barcodes.valueAt(0) != null && !found) {
                         found = true;
-                        intentData = barcodes.valueAt(0).displayValue;
+                        intentData = barcodes.valueAt(0).rawValue;
                         Intent intent = new Intent(ScannerActivity.this, DecryptCodeActivity.class);
-                        intent.putExtra("data", barcodes.valueAt(0));
+                        intent.putExtra("data", intentData);
                         startActivity(intent);
                     }
 

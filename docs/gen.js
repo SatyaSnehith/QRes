@@ -51,74 +51,6 @@ var encryptMap = new Map();
 
 var invalidate = "";
 
-function saveInput() {
-    localStorage['selectedEncTypeText'] = selectedEncType.innerHTML;
-    localStorage['codeTypeSelectedText'] = codeTypeSelected.innerHTML;
-    localStorage['wifiTypeSelectedText'] = wifiTypeSelected.innerHTML;
-    localStorage['inputText'] = inputText.value;
-    localStorage['inputUrl'] = inputUrl.value;
-    localStorage['inputEmail'] = inputEmail.value;
-    localStorage['inputPhone'] = inputPhone.value;
-    localStorage['inputPhoneSms'] = inputPhoneSms.value;
-    localStorage['inputSms'] = inputSms.value;
-    localStorage['inputSsid'] = inputSsid.value;
-    localStorage['inputPassword'] = inputPassword.value;
-    localStorage['inputName'] = inputName.value;
-    localStorage['inputCompany'] = inputCompany.value;
-    localStorage['inputPhoneConInfo'] = inputPhoneConInfo.value;
-    localStorage['inputEmailConInfo'] = inputEmailConInfo.value;
-    localStorage['inputAddress'] = inputAddress.value;
-    localStorage['inputUrlConInfo'] = inputUrlConInfo.value;
-    localStorage['inputNote'] = inputNote.value;
-    localStorage['inputCeasar'] = inputCeasar.value;
-    localStorage['inputVigenere'] = inputVigenere.value;
-}
-
-function getInput() {
-    if (typeof localStorage['selectedEncTypeText'] !== "undefined")
-        selectedEncType.innerHTML = localStorage['selectedEncTypeText'];
-    if (typeof localStorage['codeTypeSelectedText'] !== "undefined")
-        codeTypeSelected.innerHTML = localStorage['codeTypeSelectedText'];
-    if (typeof localStorage['wifiTypeSelectedText'] !== "undefined")
-        wifiTypeSelected.innerHTML = localStorage['wifiTypeSelectedText'];
-    if (typeof localStorage['inputText'] !== "undefined")
-        inputText.value = localStorage['inputText'];
-    if (typeof localStorage['inputUrl'] !== "undefined")
-        inputUrl.value = localStorage['inputUrl'];
-    if (typeof localStorage['inputEmail'] !== "undefined")
-        inputEmail.value = localStorage['inputEmail'];
-    if (typeof localStorage['inputPhone'] !== "undefined")
-        inputPhone.value = localStorage['inputPhone'];
-    if (typeof localStorage['inputPhoneSms'] !== "undefined")
-        inputPhoneSms.value = localStorage['inputPhoneSms'];
-    if (typeof localStorage['inputSms'] !== "undefined")
-        inputSms.value = localStorage['inputSms'];
-    if (typeof localStorage['inputSsid'] !== "undefined")
-        inputSsid.value = localStorage['inputSsid'];
-    if (typeof localStorage['inputPassword'] !== "undefined")
-        inputPassword.value = localStorage['inputPassword'];
-    if (typeof localStorage['inputName'] !== "undefined")
-        inputName.value = localStorage['inputName'];
-    if (typeof localStorage['inputCompany'] !== "undefined")
-        inputCompany.value = localStorage['inputCompany'];
-    if (typeof localStorage['inputPhoneConInfo'] !== "undefined")
-        inputPhoneConInfo.value = localStorage['inputPhoneConInfo'];
-    if (typeof localStorage['inputEmailConInfo'] !== "undefined")
-        inputEmailConInfo.value = localStorage['inputEmailConInfo'];
-    if (typeof localStorage['inputAddress'] !== "undefined")
-        inputAddress.value = localStorage['inputAddress'];
-    if (typeof localStorage['inputUrlConInfo'] !== "undefined")
-        inputUrlConInfo.value = localStorage['inputUrlConInfo'];
-    if (typeof localStorage['inputNote'] !== "undefined")
-        inputNote.value = localStorage['inputNote'];
-    if (typeof localStorage['inputCeasar'] !== "undefined")
-        inputCeasar.value = localStorage['inputCeasar'];
-    if (typeof localStorage['inputVigenere'] !== "undefined")
-        inputVigenere.value = localStorage['inputVigenere'];
-}
-
-getInput();
-
 function hideAllEncTypes() {
     typeCeasar.style.display = 'none';
     typeVigenere.style.display = 'none';
@@ -223,7 +155,6 @@ function init() {
 
     encodeTypeMap[codeTypes[2]] = function() {
         var value = inputEmail.value;
-        console.log(value);
         if (value.length > 0)
             return "mailto:" + value;
         else return null;
@@ -253,7 +184,6 @@ function init() {
         var ssid = escapeText(inputSsid.value);
         if (ssid.length > 0) {
             var encoded = "WIFI:S:" + ssid + ";";
-            console.log(encoded);
             var t = wifiTypes[0];
             switch(wifiTypeSelected.innerHTML) {
                 case wifiTypes[1]:
@@ -336,7 +266,6 @@ function init() {
     encryptMap[encTypes[1]] = function(text) {
         if (text == null) return null;
         var key = parseInt(inputCeasar.value);
-        console.log(key);
         if (!isNaN(key)) {
             return encryptCeasar(text, key);
         } else {
@@ -424,7 +353,6 @@ function generate() {
     hideInvalidateItem();
     var encodedValue = encodeTypeMap[codeTypeSelected.innerHTML]();
     var encryptedValue = encryptMap[selectedEncType.innerHTML](encodedValue);
-    console.log(encryptedValue);
     if (encryptedValue == null) {
         showInvalidateItem();
         invalidateText.innerHTML = invalidate;
@@ -475,6 +403,80 @@ function closeWifiDrop() {
     wifiOptions.style.display = "none";
 }
 
+function saveInput() {
+    localStorage['selectedEncTypeText'] = selectedEncType.innerHTML;
+    localStorage['codeTypeSelectedText'] = codeTypeSelected.innerHTML;
+    localStorage['wifiTypeSelectedText'] = wifiTypeSelected.innerHTML;
+    localStorage['inputText'] = inputText.value;
+    localStorage['inputUrl'] = inputUrl.value;
+    localStorage['inputEmail'] = inputEmail.value;
+    localStorage['inputPhone'] = inputPhone.value;
+    localStorage['inputPhoneSms'] = inputPhoneSms.value;
+    localStorage['inputSms'] = inputSms.value;
+    localStorage['inputSsid'] = inputSsid.value;
+    localStorage['inputPassword'] = inputPassword.value;
+    localStorage['inputName'] = inputName.value;
+    localStorage['inputCompany'] = inputCompany.value;
+    localStorage['inputPhoneConInfo'] = inputPhoneConInfo.value;
+    localStorage['inputEmailConInfo'] = inputEmailConInfo.value;
+    localStorage['inputAddress'] = inputAddress.value;
+    localStorage['inputUrlConInfo'] = inputUrlConInfo.value;
+    localStorage['inputNote'] = inputNote.value;
+    localStorage['inputCeasar'] = inputCeasar.value;
+    localStorage['inputVigenere'] = inputVigenere.value;
+}
+
+function getInput() {
+    if (typeof localStorage['selectedEncTypeText'] !== "undefined") {
+        selectedEncType.innerHTML = localStorage['selectedEncTypeText'];
+        selectEncType(selectedEncType);
+    }
+    if (typeof localStorage['codeTypeSelectedText'] !== "undefined") {
+        codeTypeSelected.innerHTML = localStorage['codeTypeSelectedText'];
+        selectCodeType(codeTypeSelected);
+    }
+    if (typeof localStorage['wifiTypeSelectedText'] !== "undefined") {
+        wifiTypeSelected.innerHTML = localStorage['wifiTypeSelectedText'];
+        selectCodeWifiType(wifiTypeSelected);
+    }
+    if (typeof localStorage['inputText'] !== "undefined")
+        inputText.value = localStorage['inputText'];
+    if (typeof localStorage['inputUrl'] !== "undefined")
+        inputUrl.value = localStorage['inputUrl'];
+    if (typeof localStorage['inputEmail'] !== "undefined")
+        inputEmail.value = localStorage['inputEmail'];
+    if (typeof localStorage['inputPhone'] !== "undefined")
+        inputPhone.value = localStorage['inputPhone'];
+    if (typeof localStorage['inputPhoneSms'] !== "undefined")
+        inputPhoneSms.value = localStorage['inputPhoneSms'];
+    if (typeof localStorage['inputSms'] !== "undefined")
+        inputSms.value = localStorage['inputSms'];
+    if (typeof localStorage['inputSsid'] !== "undefined")
+        inputSsid.value = localStorage['inputSsid'];
+    if (typeof localStorage['inputPassword'] !== "undefined")
+        inputPassword.value = localStorage['inputPassword'];
+    if (typeof localStorage['inputName'] !== "undefined")
+        inputName.value = localStorage['inputName'];
+    if (typeof localStorage['inputCompany'] !== "undefined")
+        inputCompany.value = localStorage['inputCompany'];
+    if (typeof localStorage['inputPhoneConInfo'] !== "undefined")
+        inputPhoneConInfo.value = localStorage['inputPhoneConInfo'];
+    if (typeof localStorage['inputEmailConInfo'] !== "undefined")
+        inputEmailConInfo.value = localStorage['inputEmailConInfo'];
+    if (typeof localStorage['inputAddress'] !== "undefined")
+        inputAddress.value = localStorage['inputAddress'];
+    if (typeof localStorage['inputUrlConInfo'] !== "undefined")
+        inputUrlConInfo.value = localStorage['inputUrlConInfo'];
+    if (typeof localStorage['inputNote'] !== "undefined")
+        inputNote.value = localStorage['inputNote'];
+    if (typeof localStorage['inputCeasar'] !== "undefined")
+        inputCeasar.value = localStorage['inputCeasar'];
+    if (typeof localStorage['inputVigenere'] !== "undefined")
+        inputVigenere.value = localStorage['inputVigenere'];
+}
+
+getInput();
+
 window.onclick = function(event) {
     if (event.target.matches('#selectedEncType,#selectedEncTypeText,#encArrow')) {
         openEncDrop();
@@ -507,20 +509,20 @@ function setWidthToArray(elements, width) {
 window.onresize = function(event) {
     let width = document.body.clientWidth;
 
-    if (width >= 150 && width < 800) {
-        inputForm.style.width = width + "px";
-        setWidthToArray(inputDataList, width - 40);
+    if (width >= 200 && width < 800) {
+        inputForm.style.width = width - 50 + "px";
+        setWidthToArray(inputDataList, width - 90);
     } else if (width > 800) {
-        inputForm.style.width = 800 + "px";
-        setWidthToArray(inputDataList, 760);
+        inputForm.style.width = 750 + "px";
+        setWidthToArray(inputDataList, 710);
     }
 };
 let width = document.body.clientWidth;
 
-if (width >= 150 && width < 800) {
-    inputForm.style.width = width + "px";
-    setWidthToArray(inputDataList, width - 40);
+if (width >= 200 && width < 800) {
+    inputForm.style.width = width - 50 + "px";
+    setWidthToArray(inputDataList, width - 90);
 } else if (width > 800) {
-    inputForm.style.width = 800 + "px";
-    setWidthToArray(inputDataList, 760);
+    inputForm.style.width = 750 + "px";
+    setWidthToArray(inputDataList, 710);
 }
