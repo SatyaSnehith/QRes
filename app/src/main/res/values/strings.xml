@@ -4,7 +4,7 @@
     <string name="decrypt">Decrypt</string>
     <string name="qr_code_data">QR code data</string>
     <string name="decrypted_data">Decrypted Data</string>
-    <string name="copy">Copy</string>
+    <string name="copy">COPY</string>
     <string name="text_copy">copied to clipboard</string>
     <string name="select_scheme">Select a scheme</string>
 

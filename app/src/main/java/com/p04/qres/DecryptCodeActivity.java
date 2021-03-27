@@ -22,7 +22,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.p04.qres.data.Sms;
+import com.p04.qres.data.Url;
 import com.p04.qres.utils.DecryptUtil;
+import com.p04.qres.utils.ViewUtil;
 
 import java.util.ArrayList;
 
@@ -32,7 +35,9 @@ public class DecryptCodeActivity extends Activity implements AdapterView.OnItemS
     private ImageView backButton;
     private ImageView decodeArrowImageView;
     private LinearLayout decodeCardLayout, decodeTitleLayout, decodeDataLayout,decodeCopyButton;
-    private TextView dTextView;
+    private LinearLayout decodeLayout;
+    private TextView typeTextView;
+
 
     private ImageView decryptArrowImageView;
     private LinearLayout decryptCardLayout, decryptTitleLayout, decryptDataLayout, decryptCopyButton;
@@ -49,7 +54,10 @@ public class DecryptCodeActivity extends Activity implements AdapterView.OnItemS
         backButton.setOnClickListener(this::onBackPressed);
 
         decodeTitleLayout.setOnClickListener(this::onClickDecodeTitle);
-        dTextView.setText(text);
+
+        setDecodeData();
+
+
         decodeCopyButton.setOnClickListener(this::copyDecodeData);
 
         decryptTitleLayout.setOnClickListener(this::onClickDecryptTitle);
@@ -62,14 +70,52 @@ public class DecryptCodeActivity extends Activity implements AdapterView.OnItemS
         decrypt();
     }
 
+    private void setDecodeData() {
+        int typeId = R.string.qr_code_data;
+        View typeView = new View(this);
+        Decoder decoder = new Decoder(text);
+        if (decoder.isUrl()) {
+            Log.i("TAG", "setDecodeData: URL");
+            typeId = R.string.url;
+            typeView = ViewUtil.getUrlView(this, decoder.getUrl());
+        } else if (decoder.isEmail()) {
+            Log.i("TAG", "setDecodeData: EMAIL");
+            typeId = R.string.email;
+            typeView = ViewUtil.getEmailView(this, decoder.getEmail());
+        } else if (decoder.isPhone()) {
+            Log.i("TAG", "setDecodeData: PHONE");
+            typeId = R.string.phone_number;
+            typeView = ViewUtil.getPhoneView(this, decoder.getPhone());
+        } else if (decoder.isSms()) {
+            Log.i("TAG", "setDecodeData: SMS");
+            typeId = R.string.sms;
+            typeView = ViewUtil.getSmsView(this, decoder.getSms());
+        } else if (decoder.isWifi()) {
+            Log.i("TAG", "setDecodeData: WIFI");
+            typeId = R.string.wifi;
+            typeView = ViewUtil.getWifiView(this, decoder.getWifi());
+        } else if (decoder.isContactInformation()) {
+            Log.i("TAG", "setDecodeData: CONTACT INFORMATION");
+            typeId = R.string.contact_information;
+            typeView = ViewUtil.getContactView(this, decoder.getContact());
+        } else {
+            Log.i("TAG", "setDecodeData: TEXT");
+            typeId = R.string.text;
+            typeView = ViewUtil.getTextView(this, text);
+        }
+        typeTextView.setText(typeId);
+        decodeLayout.addView(typeView);
+    }
+
     private void init() {
         decodeCardOpened = true;
         decryptCardOpened = true;
-        text = getIntent().getParcelableExtra("data");
+        text = getIntent().getStringExtra("data");
         backButton = findViewById(R.id.back_button);
         decodeCardLayout = findViewById(R.id.decode_card_ll);
         decodeTitleLayout = findViewById(R.id.decode_card_title);
-        dTextView = findViewById(R.id.decode_data_tv);
+        typeTextView = findViewById(R.id.decode_type_tv);
+        decodeLayout = findViewById(R.id.decode_data);
         decodeDataLayout = findViewById(R.id.decode_data_ll);
         decodeArrowImageView = findViewById(R.id.decode_arrow_iv);
         decodeCopyButton = findViewById(R.id.decode_copy_button);

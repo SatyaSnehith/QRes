@@ -18,20 +18,26 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.QRes">
-        <activity android:name=".DecryptCodeActivity"></activity>
+        <activity
+            android:name=".DecryptCodeActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode" />
 
-        <activity android:name=".SplashScreenActivity">
+        <activity android:name=".SplashScreenActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ScannerActivity"></activity>
+
+        <activity
+            android:name=".ScannerActivity"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
