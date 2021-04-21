@@ -12,24 +12,23 @@
     <LinearLayout
         android:id="@+id/actionBar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/actionBar_height"
-        android:background="@android:color/white">
+        android:layout_height="@dimen/actionBar_height">
         <ImageView
             android:id="@+id/back_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:padding="14dp"
+            android:paddingVertical="14dp"
+            android:paddingHorizontal="7dp"
             android:background="@drawable/back_button_bg"
             android:src="@drawable/ic_arrow"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/decrypt"
-            android:textColor="@color/green"
+            android:text="@string/decode"
+            android:textColor="@color/gray_800"
             android:textSize="18sp"
             android:gravity="center"
-            android:fontFamily="@font/light_font"
-            android:paddingHorizontal="12dp"/>
+            android:paddingHorizontal="10dp"/>
     </LinearLayout>
 
     <ScrollView
@@ -111,6 +110,8 @@
                         android:gravity="center"
                         android:paddingHorizontal="20dp"
                         android:layout_marginVertical="10dp"
+                        android:elevation="1dp"
+                        android:translationZ="1dp"
                         >
                         <ImageView
                             android:layout_width="20dp"
@@ -208,6 +209,7 @@
                     </RelativeLayout>
 
                     <TextView
+                        android:id="@+id/decrypt_type_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/black"
@@ -216,14 +218,16 @@
                         android:textSize="14sp"
                         android:paddingHorizontal="5dp"/>
 
-                    <TextView
-                        android:id="@+id/decrypt_data_tv"
+
+                    <LinearLayout
+                        android:id="@+id/decrypt_data"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         android:textIsSelectable="true"
                         android:padding="10dp"
+                        android:orientation="horizontal"
                         android:background="@drawable/tv_bg"/>
 
                     <LinearLayout
@@ -235,6 +239,8 @@
                         android:gravity="center"
                         android:paddingHorizontal="20dp"
                         android:layout_marginVertical="10dp"
+                        android:elevation="1dp"
+                        android:translationZ="1dp"
                         >
                         <ImageView
                             android:layout_width="20dp"

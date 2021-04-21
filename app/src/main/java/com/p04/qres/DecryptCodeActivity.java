@@ -1,6 +1,7 @@
 package com.p04.qres;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -16,32 +17,32 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.p04.qres.data.Sms;
-import com.p04.qres.data.Url;
-import com.p04.qres.utils.DecryptUtil;
+import com.p04.qres.utils.CryptUtil;
 import com.p04.qres.utils.ViewUtil;
 
 import java.util.ArrayList;
 
 public class DecryptCodeActivity extends Activity implements AdapterView.OnItemSelectedListener {
-    private String text;
+    private String text, dText;
     private boolean decodeCardOpened, decryptCardOpened;
     private ImageView backButton;
     private ImageView decodeArrowImageView;
     private LinearLayout decodeCardLayout, decodeTitleLayout, decodeDataLayout,decodeCopyButton;
     private LinearLayout decodeLayout;
-    private TextView typeTextView;
+    private TextView typeTextView, dTextView;
+   private Dialog dialog;
 
 
     private ImageView decryptArrowImageView;
     private LinearLayout decryptCardLayout, decryptTitleLayout, decryptDataLayout, decryptCopyButton;
-    private TextView decryptTextView;
+    private LinearLayout decryptLayout;
     private Spinner spinner;
     private ArrayList<String> schemeList;
     private ArrayAdapter<String> schemeAdapter;
@@ -51,28 +52,28 @@ public class DecryptCodeActivity extends Activity implements AdapterView.OnItemS
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_decrypter);
         init();
+
         backButton.setOnClickListener(this::onBackPressed);
 
         decodeTitleLayout.setOnClickListener(this::onClickDecodeTitle);
 
-        setDecodeData();
-
+        setData(text, true);
 
         decodeCopyButton.setOnClickListener(this::copyDecodeData);
 
         decryptTitleLayout.setOnClickListener(this::onClickDecryptTitle);
         decryptCopyButton.setOnClickListener(this::copyDecryptData);
-        schemeList.add("base64");
+        schemeList.add("Base64");
+        schemeList.add("Password protected");
         schemeAdapter.setDropDownViewResource(R.layout.scheme_spinner_item);
         spinner.setAdapter(schemeAdapter);
         spinner.setOnItemSelectedListener(this);
 
-        decrypt();
     }
 
-    private void setDecodeData() {
-        int typeId = R.string.qr_code_data;
-        View typeView = new View(this);
+    private void setData(String text, boolean isDecode) {
+        int typeId;
+        View typeView;
         Decoder decoder = new Decoder(text);
         if (decoder.isUrl()) {
             Log.i("TAG", "setDecodeData: URL");
@@ -103,18 +104,27 @@ public class DecryptCodeActivity extends Activity implements AdapterView.OnItemS
             typeId = R.string.text;
             typeView = ViewUtil.getTextView(this, text);
         }
-        typeTextView.setText(typeId);
-        decodeLayout.addView(typeView);
+        if(isDecode) {
+            typeTextView.setText(typeId);
+            decodeLayout.removeAllViews();
+            decodeLayout.addView(typeView);
+        } else {
+            dTextView.setText(typeId);
+            decryptLayout.removeAllViews();
+            decryptLayout.addView(typeView);
+        }
     }
 
     private void init() {
         decodeCardOpened = true;
         decryptCardOpened = true;
         text = getIntent().getStringExtra("data");
+        dText = "";
         backButton = findViewById(R.id.back_button);
         decodeCardLayout = findViewById(R.id.decode_card_ll);
         decodeTitleLayout = findViewById(R.id.decode_card_title);
         typeTextView = findViewById(R.id.decode_type_tv);
+        dTextView = findViewById(R.id.decrypt_type_tv);
         decodeLayout = findViewById(R.id.decode_data);
         decodeDataLayout = findViewById(R.id.decode_data_ll);
         decodeArrowImageView = findViewById(R.id.decode_arrow_iv);
@@ -124,21 +134,31 @@ public class DecryptCodeActivity extends Activity implements AdapterView.OnItemS
         decryptTitleLayout = findViewById(R.id.decrypt_card_title);
         decryptDataLayout = findViewById(R.id.decrypt_data_ll);
         decryptArrowImageView = findViewById(R.id.decrypt_arrow_iv);
-        decryptTextView = findViewById(R.id.decrypt_data_tv);
+        decryptLayout = findViewById(R.id.decrypt_data);
         decryptCopyButton = findViewById(R.id.decrypt_copy_button);
         spinner = findViewById(R.id.decrypt_scheme_spinner);
         schemeList = new ArrayList<>();
-        schemeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, schemeList);
+        schemeAdapter = new ArrayAdapter<>(this, android.R. layout.simple_spinner_item, schemeList);
     }
 
-    private void decrypt() {
-        String text = "";
+    private String decrypt() {
+        dText = "";
         try {
-            text = DecryptUtil.base64(text);
+            dText = CryptUtil.decryptBase64(this.text);
         } catch (Exception e) {
-            text = "";
         }
-        decryptTextView.setText(text);
+        Log.i("TAG", "decrypt: " + dText);
+        return dText;
+    }
+
+    private String decryptPassword(String key) {
+        dText = "";
+        try {
+            dText = CryptUtil.withPassword(this.text, key);
+        } catch (Exception e) {
+        }
+        Log.i("TAG", "decryptPassword: " + dText);
+        return dText;
     }
 
     private void onBackPressed(View view) {
@@ -147,7 +167,26 @@ public class DecryptCodeActivity extends Activity implements AdapterView.OnItemS
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Log.i("TAG_SPINNER", "onItemSelected: " + schemeList.get(position));
+        switch (position) {
+            case 0:
+                setData(decrypt(), false);
+                break;
+            case 1:
+                if (dialog == null) {
+                    dialog = new Dialog(DecryptCodeActivity.this);
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.setContentView(R.layout.input_password_dialog);
+                    dialog.findViewById(R.id.button_ok).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            setData(decryptPassword(((EditText)dialog.findViewById(R.id.input_et)).getText().toString()), false);
+                            dialog.dismiss();
+                        }
+                    });
+                }
+                dialog.show();
+                break;
+        }
     }
 
     @Override
@@ -161,6 +200,8 @@ public class DecryptCodeActivity extends Activity implements AdapterView.OnItemS
     }
 
     private void copyDecryptData(View view) {
+        copyToClipBoard(dText);
+        Toast.makeText(this, R.string.text_copy, Toast.LENGTH_SHORT).show();
     }
 
     private void copyToClipBoard(String text) {

@@ -37,14 +37,14 @@
         android:layout_centerVertical="true"
         android:translationZ="3dp"/>
 
-    <ImageView
-        android:layout_width="@dimen/gallery_button_size"
-        android:layout_height="@dimen/gallery_button_size"
-        android:foregroundGravity="center"
-        android:src="@drawable/ic_gallery"
-        android:background="@drawable/gallery_button_bg"
-        android:padding="20dp"
-        android:layout_margin="10dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"/>
+<!--    <ImageView-->
+<!--        android:layout_width="@dimen/gallery_button_size"-->
+<!--        android:layout_height="@dimen/gallery_button_size"-->
+<!--        android:foregroundGravity="center"-->
+<!--        android:src="@drawable/ic_gallery"-->
+<!--        android:background="@drawable/gallery_button_bg"-->
+<!--        android:padding="20dp"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_alignParentBottom="true"/>-->
 </RelativeLayout>

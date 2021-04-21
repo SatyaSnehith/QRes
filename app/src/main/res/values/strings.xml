@@ -6,7 +6,7 @@
     <string name="decrypted_data">Decrypted Data</string>
     <string name="copy">COPY</string>
     <string name="text_copy">copied to clipboard</string>
-    <string name="select_scheme">Select a scheme</string>
+    <string name="select_scheme">Protection type</string>
 
     <string name="text">Text</string>
     <string name="url">URL</string>

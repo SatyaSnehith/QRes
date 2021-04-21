@@ -5,7 +5,7 @@ var wifiTypeSelected = document.getElementById("wifiTypeSelectedText");
 var encOptions = document.getElementById("encTypeOptions");
 var codeOptions = document.getElementById("codeTypeOptions");
 var wifiOptions = document.getElementById("wifiTypeOptions");
-var encTypes = ['Base64', 'Ceasar cipher', 'Vigenere cipher', 'None'];
+var encTypes = ['None', 'Base64', 'Password protected'];
 var codeTypes = ['Text', 'URL', 'Email address', 'Phone number', 'SMS', 'Wifi network', 'Contact information'];
 var wifiTypes = ['WEP', 'WPA/WPA2', 'none'];
 let typeText = document.getElementById("typeText");
@@ -14,8 +14,7 @@ let typeEmail = document.getElementById("typeEmail");
 let typePhone = document.getElementById("typePhone");
 let typeSms = document.getElementById("typeSms");
 let typeWifi = document.getElementById("typeWifi");
-let typeCeasar = document.getElementById("typeCeasar");
-let typeVigenere = document.getElementById("typeVigenere");
+let password = document.getElementById("password");
 let typeContactInformation = document.getElementById("typeContactInformation");
 var inputText = document.getElementById('inputText');
 var inputUrl = document.getElementById('inputUrl');
@@ -33,8 +32,7 @@ var inputAddress = document.getElementById('inputAddress');
 var inputUrlConInfo = document.getElementById('inputUrlConInfo');
 var inputNote = document.getElementById('inputNote');
 
-var inputCeasar = document.getElementById('inputCeasar');
-var inputVigenere = document.getElementById('inputVigenere');
+var inputPassword = document.getElementById('inputPassword');
 
 var invalidateText = document.getElementById("invalidateText");
 var invalidateItem = document.getElementById("invalidateItem");
@@ -51,10 +49,6 @@ var encryptMap = new Map();
 
 var invalidate = "";
 
-function hideAllEncTypes() {
-    typeCeasar.style.display = 'none';
-    typeVigenere.style.display = 'none';
-}
 
 function hideAllCodeTypes() {
     typeText.style.display = 'none';
@@ -241,53 +235,37 @@ function init() {
     };
 
     encTypeMap[encTypes[0]] = function() {
-        hideAllEncTypes();
+        password.style.display = 'none';
     };
 
     encTypeMap[encTypes[1]] = function() {
-        hideAllEncTypes();
-        typeCeasar.style.display = 'block';
+        password.style.display = 'none';
     };
 
     encTypeMap[encTypes[2]] = function() {
-        hideAllEncTypes();
-        typeVigenere.style.display = 'block';
-    };
-
-    encTypeMap[encTypes[3]] = function() {
-        hideAllEncTypes();
+        password.style.display = 'block';
     };
 
     encryptMap[encTypes[0]] = function(text) {
         if (text == null) return null;
-        return encryptBase64(text);
+        return text;
     }
 
     encryptMap[encTypes[1]] = function(text) {
         if (text == null) return null;
-        var key = parseInt(inputCeasar.value);
-        if (!isNaN(key)) {
-            return encryptCeasar(text, key);
-        } else {
-            invalidate = "Enter a number as Ceasar cipher key"
-            return null;
-        }
+        return encryptBase64(text);
     }
 
     encryptMap[encTypes[2]] = function(text) {
         if (text == null) return null;
-        var key = inputVigenere.value;
+        var key = inputPassword.value;
         if (key.length == 0) {
-            invalidate = "Enter a word as Vigenere key"
+            invalidate = "Enter atleast as password"
             return null;
         }
-        return encryptVigenere(text, key);
+        return encryptPasswordProtected(text, key);
     }
 
-    encryptMap[encTypes[3]] = function(text) {
-        if (text == null) return null;
-        return text;
-    }
 }
 
 init();
@@ -323,20 +301,30 @@ function addToChar(code, num) {
     }
 }
 
-function encryptCeasar(text, key) {
-    var encryptedText = "";
-    key = key % 26;
-    for (var i = 0; i < text.length; ++i) {
-        var code = text.charCodeAt(i);
-        encryptedText += addToChar(code, key);
+function encryptPasswordProtected(text, key) {
+    return encryptVigenere(encryptBase64(text), encryptBase64(key));
+}
+
+function cleanKey(key) {
+    let keyLen = key.length;
+    let result = "";
+    for (let i = 0; i < keyLen; ++i) {
+        let c = key.charCodeAt(i);
+        if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122)) {
+            result += String.fromCharCode(c);
+        }
     }
-    return encryptedText;
+    return result;
 }
 
 function encryptVigenere(text, key) {
-    var encryptedText = "";
+    var encryptedText = ""
+    key = cleanKey(key);
+    console.log(text);
+    console.log(key);
     var textLen = text.length;
     var keyLen = key.length;
+
     for (var i = 0; i < textLen; ++i) {
         var code = text.charCodeAt(i);
         encryptedText += addToChar(code, getAlphabetIndex(key.charCodeAt(i % keyLen)));
@@ -345,7 +333,8 @@ function encryptVigenere(text, key) {
 }
 
 function genUrl(text) {
-    return 'https://zxing.org/w/chart?cht=qr&chs=' + qrWidth + 'x' + qrWidth + '&chld=H%7C6&choe=UTF-8&chl=' + text + '';
+    return 'https://chart.googleapis.com/chart?chs=' + qrWidth + 'x' + qrWidth + '&cht=qr&chl=' + text + '&choe=UTF-8';
+    // return 'https://zxing.org/w/chart?cht=qr&chs=' + qrWidth + 'x' + qrWidth + '&chld=H%7C6&choe=UTF-8&chl=' + text + '';
 }
 
 function generate() {
@@ -422,8 +411,7 @@ function saveInput() {
     localStorage['inputAddress'] = inputAddress.value;
     localStorage['inputUrlConInfo'] = inputUrlConInfo.value;
     localStorage['inputNote'] = inputNote.value;
-    localStorage['inputCeasar'] = inputCeasar.value;
-    localStorage['inputVigenere'] = inputVigenere.value;
+    localStorage['inputPassword'] = inputPassword.value;
 }
 
 function getInput() {
@@ -469,10 +457,8 @@ function getInput() {
         inputUrlConInfo.value = localStorage['inputUrlConInfo'];
     if (typeof localStorage['inputNote'] !== "undefined")
         inputNote.value = localStorage['inputNote'];
-    if (typeof localStorage['inputCeasar'] !== "undefined")
-        inputCeasar.value = localStorage['inputCeasar'];
-    if (typeof localStorage['inputVigenere'] !== "undefined")
-        inputVigenere.value = localStorage['inputVigenere'];
+    if (typeof localStorage['inputPassword'] !== "undefined")
+        inputPassword.value = localStorage['inputPassword'];
 }
 
 getInput();
