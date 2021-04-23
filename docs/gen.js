@@ -23,7 +23,7 @@ var inputPhone = document.getElementById('inputPhone');
 var inputPhoneSms = document.getElementById('inputPhoneSms');
 var inputSms = document.getElementById('inputSms');
 var inputSsid = document.getElementById('inputSsid');
-var inputPassword = document.getElementById('inputPassword');
+var inputWifiPassword = document.getElementById('inputWifiPassword');
 var inputName = document.getElementById('inputName');
 var inputCompany = document.getElementById('inputCompany');
 var inputPhoneConInfo = document.getElementById('inputPhoneConInfo');
@@ -190,7 +190,7 @@ function init() {
             if (t != null) {
                 encoded += "T:" + t + ";";
             }
-            var password = escapeText(inputPassword.value);
+            var password = escapeText(inputWifiPassword.value);
             if (password.length > 0) {
                 encoded += "P:" + password + ";"
             }
@@ -403,7 +403,7 @@ function saveInput() {
     localStorage['inputPhoneSms'] = inputPhoneSms.value;
     localStorage['inputSms'] = inputSms.value;
     localStorage['inputSsid'] = inputSsid.value;
-    localStorage['inputPassword'] = inputPassword.value;
+    localStorage['inputWifiPassword'] = inputWifiPassword.value;
     localStorage['inputName'] = inputName.value;
     localStorage['inputCompany'] = inputCompany.value;
     localStorage['inputPhoneConInfo'] = inputPhoneConInfo.value;
@@ -441,8 +441,8 @@ function getInput() {
         inputSms.value = localStorage['inputSms'];
     if (typeof localStorage['inputSsid'] !== "undefined")
         inputSsid.value = localStorage['inputSsid'];
-    if (typeof localStorage['inputPassword'] !== "undefined")
-        inputPassword.value = localStorage['inputPassword'];
+    if (typeof localStorage['inputWifiPassword'] !== "undefined")
+        inputWifiPassword.value = localStorage['inputWifiPassword'];
     if (typeof localStorage['inputName'] !== "undefined")
         inputName.value = localStorage['inputName'];
     if (typeof localStorage['inputCompany'] !== "undefined")
