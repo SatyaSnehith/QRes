@@ -333,8 +333,8 @@ function encryptVigenere(text, key) {
 }
 
 function genUrl(text) {
-    return 'https://chart.googleapis.com/chart?chs=' + qrWidth + 'x' + qrWidth + '&cht=qr&chl=' + text + '&choe=UTF-8';
-    // return 'https://zxing.org/w/chart?cht=qr&chs=' + qrWidth + 'x' + qrWidth + '&chld=H%7C6&choe=UTF-8&chl=' + text + '';
+    // return 'https://chart.googleapis.com/chart?chs=' + qrWidth + 'x' + qrWidth + '&cht=qr&chl=' + text + '&choe=UTF-8';
+    return 'https://zxing.org/w/chart?cht=qr&chs=' + qrWidth + 'x' + qrWidth + '&chld=H%7C6&choe=UTF-8&chl=' + text + '';
 }
 
 function generate() {
